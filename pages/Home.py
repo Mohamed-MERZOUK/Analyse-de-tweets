@@ -5,7 +5,6 @@ from functions.Utils import get_tags,get_random_element
 from app import app
 from dash.dependencies import Input, Output, State
 from base64 import urlsafe_b64encode
-import grasia_dash_components as gdc
 import dash_defer_js_import as dji
 
 

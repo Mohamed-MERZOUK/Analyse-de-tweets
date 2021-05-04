@@ -1,9 +1,13 @@
 import dash
 import pandas as pd
-import os,sys,inspect
-import pickle, gzip
+import os
+import sys
+import inspect
+import pickle
+import gzip
 
 # LDA_model = pickle.load(open("./models/lda_model_tfidf.sav", 'rb'))
+
 
 external_stylesheets = [
     {
@@ -11,14 +15,27 @@ external_stylesheets = [
         'rel': 'stylesheet',
         'integrity': 'sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4',
         'crossorigin': 'anonymous'
-    }
+    },
+    {
+        'href': 'https://pixinvent.com/stack-responsive-bootstrap-4-admin-template/app-assets/fonts/simple-line-icons/style.min.css',
+        'rel': 'stylesheet',
+        'type': 'text/css',
+
+    },
+    {
+        'href': 'https://fonts.googleapis.com/css?family=Montserrat&display=swap',
+        'rel': 'stylesheet',
+
+
+    },
+
 ]
 
 external_scripts = [
-  
-   {
+
+    {
         'src': 'https://platform.twitter.com/widgets.js',
-        
+
         'charset': 'utf-8'
     },
     {
@@ -47,11 +64,14 @@ external_scripts = [
         'crossorigin': 'anonymous'
     },
     {
-        "src":"https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"
+        "src": "https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"
     }
-     
+
 ]
 
+# df_tweet = pd.read_json("/content/drive/My Drive/Data/covid-tweets-final.jsonl",
+#                         orient='records', lines=True, nrows=20000)
+
 app = dash.Dash(__name__, external_scripts=external_scripts,
-    external_stylesheets=external_stylesheets,suppress_callback_exceptions=True)
+                external_stylesheets=external_stylesheets, suppress_callback_exceptions=True)
 server = app.server

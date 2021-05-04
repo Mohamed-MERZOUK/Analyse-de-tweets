@@ -8,6 +8,7 @@ from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from nltk.probability import FreqDist
 import pandas as pd
+from textblob.sentiments import NaiveBayesAnalyzer
 import string
 
 
@@ -49,3 +50,12 @@ def list_to_sentence(list_words):
 
 def preprocess(text):
   return lemmatize_text(remove_nums(tokenize_lowercase(remove_urls(text))))
+
+
+def sentimentAnalyser(text):
+  blob_object = TextBlob(text, analyzer=NaiveBayesAnalyzer())
+  analysis = blob_object.sentiment
+  return analysis.classification
+
+def sentimentStats(df):
+  df.full_text.map(sentimentAnalyser)

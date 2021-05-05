@@ -6,12 +6,15 @@ import inspect
 import pickle
 import gzip
 import nltk
-
+from geopy.geocoders import Nominatim
 # LDA_model = pickle.load(open("./models/lda_model_tfidf.sav", 'rb'))
 
+# TODO remove comment
+# nltk.download('movie_reviews')
+# nltk.download('punkt')
 
-nltk.download('movie_reviews')
-nltk.download('punkt')
+
+geolocator = Nominatim(user_agent='http://127.0.0.1:8888/')
 
 external_stylesheets = [
     {
@@ -74,7 +77,7 @@ external_scripts = [
 ]
 
 df_tweet = pd.read_json("./data/covid-tweets-sample.jsonl",
-                         orient='records', lines=True)
+                        orient='records', lines=True)
 
 app = dash.Dash(__name__, external_scripts=external_scripts,
                 external_stylesheets=external_stylesheets, suppress_callback_exceptions=True)

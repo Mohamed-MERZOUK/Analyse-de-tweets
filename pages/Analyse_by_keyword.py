@@ -13,21 +13,26 @@ import plotly.express as px
 from app import df_tweet
 from functions.Stats import hachtags_numbers, mentions_numbers, getGenderCounts
 import plotly.graph_objects as go
-from functions.Plots import wordCloud
+from functions.Plots import simple_map, treeMap, wordCloud, word_freq_tweet
+import dash_leaflet as dl
 
 layout = dbc.Container(
     [
         dbc.Row(
             [
-                dbc.Col(card(title="tweets without hachtags", value=str(hachtags_numbers(df_tweet.values.tolist())[0][0]), progress=str(hachtags_numbers(df_tweet.values.tolist())[0][1]))),
-                dbc.Col(card(title="tweets with hachtags", value=str(hachtags_numbers(df_tweet.values.tolist())[1][0]), progress=str(hachtags_numbers(df_tweet.values.tolist())[1][1]))),
-                dbc.Col(card(title="tweets without mentions", value=str(mentions_numbers(df_tweet.values.tolist())[0][0]), progress=str(mentions_numbers(df_tweet.values.tolist())[0][1]))),
-                dbc.Col(card(title="tweets with mentions", value=str(mentions_numbers(df_tweet.values.tolist())[1][0]), progress=str(mentions_numbers(df_tweet.values.tolist())[1][1]))),
+                dbc.Col(card(title="tweets without hachtags", value=str(hachtags_numbers(df_tweet.values.tolist())[
+                        0][0]), progress=str(hachtags_numbers(df_tweet.values.tolist())[0][1]))),
+                dbc.Col(card(title="tweets with hachtags", value=str(hachtags_numbers(df_tweet.values.tolist())[
+                        1][0]), progress=str(hachtags_numbers(df_tweet.values.tolist())[1][1]))),
+                dbc.Col(card(title="tweets without mentions", value=str(mentions_numbers(df_tweet.values.tolist())[
+                        0][0]), progress=str(mentions_numbers(df_tweet.values.tolist())[0][1]))),
+                dbc.Col(card(title="tweets with mentions", value=str(mentions_numbers(df_tweet.values.tolist())[
+                        1][0]), progress=str(mentions_numbers(df_tweet.values.tolist())[1][1]))),
             ]
         ),
         dbc.Row(
             html.H3("Variation of tweets count over time", className="mx-auto"),
-            style={"margin" : "20px 0"}
+            style={"margin": "20px 0"}
         ),
         dbc.Row(
             [
@@ -55,17 +60,17 @@ layout = dbc.Container(
         ),
         dbc.Row(
             html.H3("Proportion of users gender", className="mx-auto"),
-            style={"margin" : "20px 0"}
+            style={"margin": "20px 0"}
         ),
         dbc.Row(
             [
-                dbc.Col(cardMultiProgress(title1="Hommes", title2="Femmes", value1=str(getGenderCounts(df_tweet)["male"]), value2=str(getGenderCounts(df_tweet)["female"]), 
-                                            progress1=str( int(int(getGenderCounts(df_tweet)["male"])*100/300)), progress2=str( int(int(getGenderCounts(df_tweet)["male"]))*100/300))),
+                dbc.Col(cardMultiProgress(title1="Hommes", title2="Femmes", value1=str(getGenderCounts(df_tweet)["male"]), value2=str(getGenderCounts(df_tweet)["female"]),
+                                          progress1=str(int(int(getGenderCounts(df_tweet)["male"])*100/300)), progress2=str(int(int(getGenderCounts(df_tweet)["male"]))*100/300))),
             ]
         ),
         dbc.Row(
             html.H3("Sentiment Analysis", className="mx-auto"),
-            style={"margin" : "20px 0"}
+            style={"margin": "20px 0"}
         ),
         dbc.Row(
             [
@@ -88,19 +93,60 @@ layout = dbc.Container(
                         )
                     ])]), width=3),
                 dbc.Col(
-                    dcc.Graph(id="graph-sentiment"), 
+                    dcc.Graph(id="graph-sentiment"),
                     width=9
                 )
 
             ]
         ),
         dbc.Row(
+            html.H3("Words Analysis", className="mx-auto"),
+            style={"margin": "20px 0"}
+        ),
+        dbc.Row(
             dbc.Col(
                 [
-                    html.Button(id='invisible_button', style={'display':'none'}),
-                    html.Img(id="graph-wordcloud", src=".\\assets\\alice.png")
+                    # html.Img(id="graph-wordcloud", src=".\\assets\\alice.png")
                 ]
             )
+        ),
+        dbc.Row([
+            dbc.Col(
+                [
+                    dcc.Tabs(id='tabs-example', children=[
+                        dcc.Tab(label='TreeMap', children=[
+                            dcc.Graph(figure=treeMap(df_tweet))
+                        ]),
+                        dcc.Tab(label='WordCloud', children=[
+                            html.H3("WordCloud")
+                        ]),
+                    ]),
+
+                ]
+            )
+
+        ]
+        ),
+        dbc.Row([
+            dbc.Col(
+                [
+                    dcc.Graph(figure=word_freq_tweet(df_tweet))
+
+                ]
+            )
+
+        ]
+        ),
+        dbc.Row([
+            dbc.Col(
+                [
+                    dl.Map([dl.TileLayer(), dl.LayerGroup(id="layer")], id="map", style={
+                           'width': '100%', 'height': '50vh', 'margin': "auto", "display": "block"}),
+
+                ]
+            )
+
+        ]
         )
     ],
 )
@@ -121,7 +167,7 @@ def update_graph_dist(dist_var):
     # df = df.rename(columns={'truncated': 'count'})
     fig = px.line(df_time, x='created_at', y="sum")
     fig.layout.paper_bgcolor = '#fafafa'
-    #fig.layout.plot_bgcolor = "#fff"
+    # fig.layout.plot_bgcolor = "#fff"
     return fig
 
 
@@ -132,36 +178,33 @@ def update_graph_sent(dist_var):
 
     df = df_tweet.copy()
 
-    labels = ['Positive','Negative']
-    values = ['1000','500']
+    labels = ['Positive', 'Negative']
+    values = ['1000', '500']
     colors = ['#EF553B', 'rgb(102,194,165)']
 
     # Use `hole` to create a donut-like pie chart
     fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.5)])
     fig.update_layout(
-    autosize=False,
-    # width=500,
-    # height=500,
-    margin=dict(
-        l=100,
-        r=10,
-        b=100,
-        t=10,
-        pad=10
-    ),
-    paper_bgcolor="#fafafa",
+        autosize=False,
+        # width=500,
+        # height=500,
+        margin=dict(
+            l=100,
+            r=10,
+            b=100,
+            t=10,
+            pad=10
+        ),
+        paper_bgcolor="#fafafa",
     )
 
     fig.update_traces(hoverinfo='label+percent', textinfo='value', textfont_size=20,
-                  marker=dict(colors=colors))
+                      marker=dict(colors=colors))
 
     return fig
 
 
-@app.callback(
-    Output('graph-wordcloud', 'src'),
-    [Input('url','pathname')])
-def update_graph_wordcloud(dist_var):
-    #print("aaaa\n\n")
-    df = df_tweet.copy()
-    return wordCloud(df)
+@app.callback(Output("layer", "children"), [Input("map", "click_lat_lng")])
+def map_click(click_lat_lng):
+
+    return simple_map(df_tweet, nb_makers=20)

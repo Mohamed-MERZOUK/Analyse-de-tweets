@@ -76,3 +76,5 @@ wordcloud==1.6.0
 wrapt==1.10.11
 zipp==3.1.0
 textblob==0.15.3
+geopy==2.1.0
+dash_leaflet==0.1.13

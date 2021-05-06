@@ -30,7 +30,6 @@
 }
 
 #sidebar .sidebar-header {
-  padding: 20px;
   background: #6d7fcc;
 }
 
@@ -44,10 +43,17 @@
   padding: 10px;
 }
 
+#sidebar hr {
+  width: 80%;
+  background-color: white;
+}
+
 #sidebar ul li a {
   padding: 10px;
+  padding-left: 20px !important;
   font-size: 1.1em;
   display: block;
+  font-family: 'Poppins', sans-serif;
 }
 
 #sidebar ul li a:hover {
@@ -121,10 +127,10 @@ a.article:hover {
 */
 /* 
  */
-@import 'https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700';
+/* @import 'https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700'; */
 
 body {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Noto Serif', serif;
   background: #fafafa;
 }
 
@@ -146,14 +152,15 @@ a:focus {
 
 #sidebar {
   /* don't forget to add all the previously mentioned styles here too */
-  background: #7386d5;
+  background: #456987;
   color: #fff;
   transition: all 0.3s;
 }
 
 #sidebar .sidebar-header {
-  padding: 20px;
-  background: #6d7fcc;
+  padding: 40px 0 10px 0;
+  background: #456987;
+  text-align: center;
 }
 
 #sidebar ul.components {
@@ -173,8 +180,8 @@ a:focus {
 }
 
 #sidebar ul li a:hover {
-  color: #7386d5;
-  background: #fff;
+  color: #456987;
+  background: #fafafa;
 }
 
 #sidebar ul li.active>a,

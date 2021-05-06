@@ -11,48 +11,123 @@ import plotly.express as px
 from functions.NLP import preprocess
 from app import geolocator
 import dash_leaflet as dl
+import dash_leaflet.express as dlx
+import plotly.graph_objs as go
+from plotly.offline import init_notebook_mode, iplot
 
 # def LDA_plot():
 #     vis = gensimvis.prepare(lda_model_tfidf, bow_corpus, dictionary=lda_model_tfidf.id2word)
 #     return vis
 
 
+def timeseriesCount(df_tweet):
+    df = df_tweet.copy()
+    df_time = df.groupby(pd.Grouper(key="created_at",
+                                    freq="1D")).count().reset_index()
+    df_time = df_time.rename(columns={'favorite_count': 'sum'})
+
+    fig = px.line(df_time, x='created_at', y="sum")
+    fig.layout.paper_bgcolor = '#fafafa'
+
+    fig.update_layout(
+        xaxis=dict(
+            title="Date",
+            showline=True,
+            showgrid=False,
+            showticklabels=True,
+            linecolor='black',
+            linewidth=2,
+            ticks='outside',
+            tickfont=dict(
+                family='Arial',
+                size=12,
+                color='rgb(82, 82, 82)',
+            ),
+        ),
+        yaxis=dict(
+            title="Number of tweets",
+            showgrid=True,
+            linecolor='black',
+            zeroline=False,
+            showline=False,
+            gridcolor="rgb(82,82,82)",
+        ),
+        showlegend=False,
+        plot_bgcolor='#fafafa'
+    )
+    fig.update_traces(line_color='#456987')
+
+    return fig
+
+
 def wordCloud(df):
-    d = path.dirname(__file__) if "__file__" in locals() else os.getcwd()
 
-    all_words = [word for tokens in df['full_text'] for word in tokens]
-    print(len(all_words))
-    # word_freq = FreqDist(all_words)
+    df_t = df['full_text'].copy()
 
-    # most_common_count = [x[1] for x in word_freq.most_common(30)]
-    # most_common_word = [x[0] for x in word_freq.most_common(30)]
+    df_t = df_t.apply(preprocess)
+    all_words = [
+        word for tokens in df_t for word in tokens if word != "coronavirus"]
 
-    # #create dictionary mapping of word count
-    # top_30_dictionary = dict(zip(most_common_word, most_common_count))
+    text = " ".join(all_words)
 
-    alice_mask = np.array(Image.open(
-        path.join(d, ".\\assets\\alice_mask.png")))
+    wc = WordCloud(stopwords=set(STOPWORDS),
+                   max_words=30,
+                   max_font_size=100)
+    wc.generate(text)
 
-    stopwords = set(STOPWORDS)
+    word_list = []
+    freq_list = []
+    fontsize_list = []
+    position_list = []
+    orientation_list = []
+    color_list = []
 
-    wc = WordCloud(background_color="white", max_words=2000, mask=alice_mask,
-                   stopwords=stopwords, contour_width=3, contour_color='steelblue')
+    for (word, freq), fontsize, position, orientation, color in wc.layout_:
+        word_list.append(word)
+        freq_list.append(freq)
+        fontsize_list.append(fontsize)
+        position_list.append(position)
+        orientation_list.append(orientation)
+        color_list.append(color)
 
-    # generate word cloud
-    wc.generate(" ".join(["all word", "zzzz", "aaa", "bbbbbb"]))
+    # get the positions
+    x = []
+    y = []
+    for i in position_list:
+        x.append(i[0])
+        y.append(i[1])
 
-    # store to file
-    wc.to_file(path.join(d, ".\\assets\\alice.png"))
+    # get the relative occurence frequencies
+    new_freq_list = []
+    for i in freq_list:
+        new_freq_list.append(i*100)
+    new_freq_list
 
-    # show
-    # plt.imshow(wc, interpolation='bilinear')
-    # plt.axis("off")
-    # plt.figure()
-    # plt.imshow(alice_mask, cmap=plt.cm.gray, interpolation='bilinear')
-    # plt.axis("off")
-    # plt.show()
+    trace = go.Scatter(x=x,
+                       y=y,
+                       textfont=dict(size=new_freq_list,
+                                     color=color_list),
+                       hoverinfo='text',
+                       hovertext=['{0}{1}'.format(
+                           w, f) for w, f in zip(word_list, freq_list)],
+                       mode="text",
+                       text=word_list
+                       )
 
-    return ".\\assets\\alice.png"
+    layout = go.Layout(
+        xaxis=dict(showgrid=False,
+                   showticklabels=False,
+                   zeroline=False,
+                   automargin=True),
+        yaxis=dict(showgrid=False,
+                   showticklabels=False,
+                   zeroline=False,
+                   automargin=True)
+    )
+
+    fig = go.Figure(data=[trace], layout=layout)
+
+    return fig
 
 
 def treeMap(df_input):
@@ -95,12 +170,39 @@ def word_freq_tweet(df):
     fig = px.bar(df_count, x='length', y='count', labels={
                  'count': 'Number of Tweets', 'length': 'Words per Tweet'})
 
+    fig.update_layout(
+        xaxis=dict(
+            showline=True,
+            showgrid=False,
+            showticklabels=True,
+            linecolor='black',
+            linewidth=2,
+            ticks='outside',
+            tickfont=dict(
+                family='Arial',
+                size=12,
+                color='rgb(82, 82, 82)',
+            ),
+        ),
+        yaxis=dict(
+            showgrid=True,
+            linecolor='black',
+            zeroline=False,
+            showline=False,
+            gridcolor="rgb(82,82,82)",
+        ),
+        showlegend=False,
+        plot_bgcolor='#fafafa'
+    )
+    fig.layout.paper_bgcolor = '#fafafa'
+    fig.update_traces(marker_color='#456987')
+
     return fig
 
 
 def simple_map(df, nb_makers):
     postions = []
-    for tweet in df.iloc[0:, :nb_makers].iterrows():
+    for tweet in df.iloc[0:nb_makers, :].iterrows():
         try:
             if tweet[1]['user']['location']:
                 coordinate = geolocator.geocode(tweet[1]['user']['location'])
@@ -108,7 +210,29 @@ def simple_map(df, nb_makers):
                     continue
 
                 postions.append(dl.Marker(position=(
-                    coordinate.latitude, coordinate.longitude), title=tweet[1]['full_text']))
-        except KeyError:
+                    coordinate.latitude, coordinate.longitude), children=dl.Tooltip("{}".format(tweet[1]['full_text']))))
+
+        except Exception as e:
+            print("Http error : " + e)
             continue
+
+    return postions
+
+
+def cluster_map(df, nb_makers):
+    postions = []
+    for tweet in df.iloc[0:nb_makers, :].iterrows():
+        try:
+            if tweet[1]['user']['location']:
+                coordinate = geolocator.geocode(tweet[1]['user']['location'])
+                if(not coordinate):
+                    continue
+
+                postions.append(dict(lat=coordinate.latitude,
+                                lon=coordinate.longitude))
+
+        except Exception as e:
+            print("Http error")
+            continue
+
     return postions

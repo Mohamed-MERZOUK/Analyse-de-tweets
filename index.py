@@ -15,20 +15,21 @@ sideBar = html.Nav(
     id='sidebar',
     children=[
         html.Div(
-            children=html.H3('REC-OPTI'),
+            children=html.H3('Covid-19'),
             className='sidebar-header'
         ),
+        html.Hr(),
         html.Ul(
             className='list-unstyled components',
 
             children=[
-                html.P('Dashboard'),
+
                 html.Li(
                     className='active',
                     children=[
                         html.Li(
                             dbc.NavLink(
-                                'home',
+                                'Home',
                                 href="/",
                             )
                         ),

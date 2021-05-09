@@ -4,9 +4,9 @@ import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
-from pages import Home, Analyse_by_keyword
+from pages import Home, Analyse_by_keyword, Analyse_topic_modeling
 import grasia_dash_components as gdc
-from app import df_tweet
+from app import df_tweet, df_tweet_working
 from functions.Plots import wordCloud
 
 globalActiveSideBar = ""
@@ -102,12 +102,14 @@ def clicks(n_clicks):
 
 @app.callback(Output("content-page", "children"), [Input("url", "pathname")])
 def render_page_content(pathname):
+
     if pathname == "/":
         return Home.layout
     if pathname == "/analysebykeyword":
+
         return Analyse_by_keyword.layout
     if pathname == "/analysetopicmodeling":
-        return Home.layout
+        return Analyse_topic_modeling.layout
     elif pathname == "/exec":
         return html.Div(html.H1("bbbbbb"))
 

@@ -10,7 +10,7 @@ import dash_defer_js_import as dji
 from functions.Components import card, cardMultiProgress
 import pandas as pd
 import plotly.express as px
-from app import df_tweet
+from app import df_tweet, df_tweet_working
 from functions.Stats import hachtags_numbers, mentions_numbers, getGenderCounts
 import plotly.graph_objects as go
 from functions.Plots import simple_map, treeMap, wordCloud, word_freq_tweet, cluster_map, timeseriesCount
@@ -209,7 +209,8 @@ layout = dbc.Container(
     [Input('algo-1', 'value'),
      Input('algo-2', 'value')])
 def update_graph_dist(dist_var1, dist_var2):
-
+    print('analyse')
+    print(df_tweet_working.shape)
     df = df_tweet.copy()
     df_time = df[['created_at', 'retweet_count', 'favorite_count']].groupby(pd.Grouper(key="created_at",
                                                                                        freq=dist_var1)).sum().reset_index()

@@ -1,5 +1,6 @@
 import dash
 import pandas as pd
+import numpy as np
 import os
 import sys
 import inspect
@@ -7,7 +8,13 @@ import pickle
 import gzip
 import nltk
 from geopy.geocoders import Nominatim
-# LDA_model = pickle.load(open("./models/lda_model_tfidf.sav", 'rb'))
+# import pyLDAvis
+# import pyLDAvis.gensim_models as gensimvis
+
+tweetsIdsByTopic = pickle.load(open('./data/tweetsIdsByTopic.npy', 'rb'))
+dictionnary = pickle.load(open('./data/lda_dictionary.sav', 'rb'))
+lda_model = pickle.load(open('./models/lda_model.sav', 'rb'))
+
 
 # TODO remove comment
 # nltk.download('movie_reviews')
@@ -81,6 +88,15 @@ external_scripts = [
 df_tweet = pd.read_json("./data/covid-tweets-sample.jsonl",
                         orient='records', lines=True)
 
+if(os.path.isfile('./data/working_data.jsonl')):
+    print("hello word")
+    df_tweet_working = pd.read_json("./data/working_data.jsonl",
+                                    orient='records', lines=True)
+else:
+    df_tweet_working = df_tweet.copy()
+
+# df_tweet = df_tweet[df_tweet['id'].isin(tweetsIdsByTopic[0])]
+# print(df_tweet.shape)
 app = dash.Dash(__name__, external_scripts=external_scripts,
                 external_stylesheets=external_stylesheets, suppress_callback_exceptions=True)
 server = app.server

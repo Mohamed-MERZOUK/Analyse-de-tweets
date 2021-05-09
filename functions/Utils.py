@@ -1,10 +1,10 @@
-from functions.NLP import tokenize_lowercase
+from functions.NLP import preprocess, tokenize_lowercase
 
 import secrets
 
 
 def get_tags(text):
-    return tokenize_lowercase(text)
+    return preprocess(text)
 
 
 def get_random_element(liste_element=["primary", "secondary", "success", 'danger', "info", "warning", 'dark']):

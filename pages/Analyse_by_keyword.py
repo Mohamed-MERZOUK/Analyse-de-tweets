@@ -1,7 +1,7 @@
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
-from functions.Utils import get_tags, get_random_element
+from functions.Utils import get_tags, get_random_element, read_workingDf
 from app import app
 from dash.dependencies import Input, Output, State
 from base64 import urlsafe_b64encode
@@ -10,7 +10,7 @@ import dash_defer_js_import as dji
 from functions.Components import card, cardMultiProgress
 import pandas as pd
 import plotly.express as px
-from app import df_tweet, df_tweet_working
+from app import df_tweet
 from functions.Stats import hachtags_numbers, mentions_numbers, getGenderCounts
 import plotly.graph_objects as go
 from functions.Plots import simple_map, treeMap, wordCloud, word_freq_tweet, cluster_map, timeseriesCount
@@ -20,7 +20,14 @@ import dash_leaflet.express as dlx
 
 layout = dbc.Container(
     [
-
+        html.H5(
+            "Analyse by keywords",
+            style={
+                "position": "absolute", "top": "0", "right": "0",
+                "padding": "0.5em 1em", "background-color": "#456987",
+                "color": "#fafafa", "z-index": "99999"
+            }
+        ),
         dbc.Row(
             html.H3("Number of tweets posted over time", className="mx-auto"),
             style={"margin": "40px 0 0 0"}
@@ -28,7 +35,7 @@ layout = dbc.Container(
         dbc.Row(
             [
                 dbc.Col(dcc.Graph(id="graph-timeseriesCount",
-                        figure=timeseriesCount(df_tweet)), width=12)
+                        figure=timeseriesCount(read_workingDf())), width=12)
             ]
         ),
         dbc.Row(
@@ -209,8 +216,7 @@ layout = dbc.Container(
     [Input('algo-1', 'value'),
      Input('algo-2', 'value')])
 def update_graph_dist(dist_var1, dist_var2):
-    print('analyse')
-    print(df_tweet_working.shape)
+
     df = df_tweet.copy()
     df_time = df[['created_at', 'retweet_count', 'favorite_count']].groupby(pd.Grouper(key="created_at",
                                                                                        freq=dist_var1)).sum().reset_index()

@@ -2,19 +2,31 @@ import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
 from functions.Utils import get_tags, get_random_element
-from app import app, df_tweet, tweetsIdsByTopic, df_tweet_working
+from app import app, df_tweet, tweetsIdsByTopic
 from dash.dependencies import Input, Output, State
 from base64 import urlsafe_b64encode
 import dash_defer_js_import as dji
 from functions.NLP import predictTopic
 import time
+import os
+import pandas as pd
 
+df_tweet_home = df_tweet.copy()
 
 layout = dbc.Container(
     [
 
+        html.H5(
+            "Home",
+            style={
+                "position": "absolute", "top": "0", "right": "0",
+                "padding": "0.5em 1em", "background-color": "#456987",
+                "color": "#fafafa", "z-index": "99999"
+            }
+        ),
+
         dbc.Row(
-            html.H1("Advenced Twitter Analyzer", style={
+            html.H2("Advenced Tweets Analyzer for Covid-19", style={
                     "margin-bottom": "30px"}, className="mx-auto")
         ),
         dbc.Row(
@@ -29,7 +41,7 @@ layout = dbc.Container(
         dbc.Row(
             dbc.Col(
                 [
-                    dbc.Button("Submitt", id="input_key_button", n_clicks=0, style={
+                    dbc.Button("Submit", id="input_key_button", n_clicks=0, style={
                                "margin-top": "30px"}, className="btn btn-secondary btn-lg btn-block"),
                 ],
                 width=12,
@@ -64,22 +76,25 @@ layout = dbc.Container(
 )
 def submit(n_clicks, input_value):
 
-    global df_tweet_working
     if(n_clicks == 0):
         return [""]
     tags = get_tags(input_value)
     # print("home")
     # print(df_tweet_working.shape)
 
+    global df_tweet_home
+
     df_tweet_working = df_tweet[df_tweet['id'].isin(
         tweetsIdsByTopic[predictTopic(input_value)])]
+
+    df_tweet_home = df_tweet_working.copy()
 
     with open('./data/working_data.jsonl', 'w') as f:
         pass
     df_tweet_working.to_json('./data/working_data.jsonl',
                              orient="records", lines=True)
 
-    return [[(html.Span(tag, className="badge badge-"+get_random_element(), style={"font-size": "15pt", "margin": "10px 5px 0 0"})) for tag in tags]]
+    return [[(html.Span(tag, className="badge badge-"+get_random_element(), style={"font-size": "13pt", "margin": "10px 5px 0 0"})) for tag in tags]]
 
 
 @app.callback(
@@ -93,13 +108,19 @@ def submit(n_clicks):
 
     nb_tweets = 6
 
-    sample_tweets = df_tweet_working.sort_values(
+    # if not os.path.exists("./data/working_data.jsonl"):
+    #     return ['']
+
+    # df_tweet_working = pd.read_json("./data/working_data.jsonl",
+    #                                 orient='records', lines=True)
+
+    sample_tweets = df_tweet_home.sort_values(
         by=['created_at'], ascending=False).iloc[0:nb_tweets, :]
     sample_tweets.reset_index(inplace=True)
     index = 0
     all_tweets = []
     all_tweets.append(dbc.Row(
-        html.H3("Latest tweets", className="mx-auto",
+        html.H4("Latest tweets", className="mx-auto",
                 style={"margin-top": "40px"})
     ))
     for i in range(int(nb_tweets/3)):

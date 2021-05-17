@@ -20,6 +20,15 @@ from app import app
 
 
 layout = dbc.Container([
+
+    html.H5(
+        "Topic modling analysis",
+        style={
+            "position": "absolute", "top": "0", "right": "0",
+            "padding": "0.5em 1em", "background-color": "#456987",
+            "color": "#fafafa", "z-index": "99999"
+        }
+    ),
     dbc.Row(
         html.H3("LDA  advanced topic visualization", className="mx-auto"),
         style={"margin": "40px 0 0 0"}

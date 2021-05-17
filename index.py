@@ -6,7 +6,7 @@ import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
 from pages import Home, Analyse_by_keyword, Analyse_topic_modeling
 import grasia_dash_components as gdc
-from app import df_tweet, df_tweet_working
+from app import df_tweet
 from functions.Plots import wordCloud
 
 globalActiveSideBar = ""

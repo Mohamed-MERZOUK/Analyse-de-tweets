@@ -89,11 +89,11 @@ df_tweet = pd.read_json("./data/covid-tweets-sample.jsonl",
                         orient='records', lines=True)
 
 if(os.path.isfile('./data/working_data.jsonl')):
-    print("hello word")
-    df_tweet_working = pd.read_json("./data/working_data.jsonl",
-                                    orient='records', lines=True)
-else:
-    df_tweet_working = df_tweet.copy()
+    os.remove("./data/working_data.jsonl")
+    # df_tweet_working = pd.read_json("./data/working_data.jsonl",
+    #                                 orient='records', lines=True)
+# else:
+#     df_tweet_working = df_tweet.copy()
 
 # df_tweet = df_tweet[df_tweet['id'].isin(tweetsIdsByTopic[0])]
 # print(df_tweet.shape)

@@ -29,14 +29,28 @@ layout = dbc.Container(
             html.H2("Advenced Tweets Analyzer for Covid-19", style={
                     "margin-bottom": "30px"}, className="mx-auto")
         ),
-        dbc.Row(
+        dbc.Row([
             dbc.Col(
                 [
                     dbc.Input(id="input_keyword", type="text",
-                              placeholder="", className="mb-10")
+                              placeholder="keywords", className="mb-10")
                 ],
-                width=12,
+                width=10,
+            ),
+            dbc.Col(
+                [
+                    dcc.Dropdown(id="select_algo",
+                                 className="mb-10",
+                                 options=[{'label': i, 'value': i}
+                                          for i in ["NMF", "LDA"]],
+                                 value="LDA",
+                                 searchable=False,
+                                 clearable=False,)
+                ],
+                width=2,
             )
+        ]
+
         ),
         dbc.Row(
             dbc.Col(

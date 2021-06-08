@@ -72,20 +72,21 @@ def cardMultiProgress(title1="Hommes", title2="Femmes", value1="120", value2="12
                                 [
                                     html.Div(
                                         [
-                                           html.Div(
+                                            html.Div(
                                                 [
-                                                    
+
                                                     dbc.Row(
                                                         [
                                                             dbc.Col(
                                                                 [
-                                                                    html.H6(title1),
+                                                                    html.H6(
+                                                                        title1),
                                                                     html.H5(
                                                                         [
                                                                             value1,
                                                                             html.Span(
-                                                                                "+1.69%",
-                                                                                className= color1 + " m-l-10"
+                                                                                "-10%",
+                                                                                className=color1 + " m-l-10"
                                                                             )
                                                                         ],
                                                                         className="m-b-30 f-w-700"
@@ -93,35 +94,38 @@ def cardMultiProgress(title1="Hommes", title2="Femmes", value1="120", value2="12
                                                                     html.Div(
                                                                         html.Div(
                                                                             className="newprogress-bar " + bg_color1,
-                                                                            style={"width": progress1 + "%"}
-                                                                        ), 
-                                                                        className="newprogress" 
+                                                                            style={
+                                                                                "width": progress1 + "%"}
+                                                                        ),
+                                                                        className="newprogress"
                                                                     ),
                                                                 ]
-                                                                
+
                                                             ),
                                                             dbc.Col(
                                                                 [
-                                                                    html.H6(title2),
+                                                                    html.H6(
+                                                                        title2),
                                                                     html.H5(
                                                                         [
                                                                             value2,
                                                                             html.Span(
-                                                                                "+1.69%",
-                                                                                className= color2 + " m-l-10"
+                                                                                "+10%",
+                                                                                className=color2 + " m-l-10"
                                                                             )
                                                                         ],
                                                                         className="m-b-30 f-w-700"
                                                                     ),
                                                                     html.Div(
                                                                         html.Div(
-                                                                            className="newprogress-bar "  + bg_color2,
-                                                                            style= {"width": progress2 + "%"}
-                                                                        ), 
-                                                                        className="newprogress" 
+                                                                            className="newprogress-bar " + bg_color2,
+                                                                            style={
+                                                                                "width": progress2 + "%"}
+                                                                        ),
+                                                                        className="newprogress"
                                                                     ),
                                                                 ]
-                                                                
+
                                                             )
                                                         ]
 
@@ -129,13 +133,13 @@ def cardMultiProgress(title1="Hommes", title2="Femmes", value1="120", value2="12
 
                                                 ],
                                                 className="card-body",
-                                           )
+                                            )
 
                                         ],
                                         className="card proj-progress-card"
 
                                     ),
-                                    
+
                                 ], className="col-xl-12"
                             ),
 
@@ -148,5 +152,3 @@ def cardMultiProgress(title1="Hommes", title2="Femmes", value1="120", value2="12
 
         ], className='page-content page-container', id="page-content"
     )
-
-

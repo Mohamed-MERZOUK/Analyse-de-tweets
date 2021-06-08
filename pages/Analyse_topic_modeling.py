@@ -13,7 +13,7 @@ import plotly.express as px
 from app import df_tweet
 from functions.Stats import hachtags_numbers, mentions_numbers, getGenderCounts
 import plotly.graph_objects as go
-from functions.Plots import simple_map, treeMap, wordCloud, word_freq_tweet, cluster_map, timeseriesCount
+from functions.Plots import simple_map, topics_tweets_count_bar_chart_LDA, topics_tweets_count_bar_chart_NMF, treeMap, wordCloud, word_freq_tweet, cluster_map, timeseriesCount
 import dash_leaflet as dl
 import dash_leaflet.express as dlx
 from app import app
@@ -21,6 +21,29 @@ from app import app
 
 layout = dbc.Container([
 
+
+    dbc.Row(
+        html.H3("LDA topics distribution", className="mx-auto"),
+        style={"margin": "40px 0 0 0"}
+    ),
+    dbc.Row(
+        dbc.Col(
+            dcc.Graph(figure=topics_tweets_count_bar_chart_LDA()),
+        )
+
+
+    ),
+    dbc.Row(
+        html.H3("NMF topics distribution", className="mx-auto"),
+        style={"margin": "40px 0 0 0"}
+    ),
+    dbc.Row(
+        dbc.Col(
+            dcc.Graph(figure=topics_tweets_count_bar_chart_NMF()),
+        )
+
+
+    ),
     html.H5(
         "Topic modling analysis",
         style={

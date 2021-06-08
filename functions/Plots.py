@@ -10,10 +10,12 @@ import pandas as pd
 import plotly.express as px
 from functions.NLP import preprocess
 from app import geolocator
+from app import tweetsIdsByTopic
 import dash_leaflet as dl
 import dash_leaflet.express as dlx
 import plotly.graph_objs as go
 from plotly.offline import init_notebook_mode, iplot
+import collections
 
 # def LDA_plot():
 #     vis = gensimvis.prepare(lda_model_tfidf, bow_corpus, dictionary=lda_model_tfidf.id2word)
@@ -206,6 +208,7 @@ def simple_map(df, nb_makers):
         try:
             if tweet[1]['user']['location']:
                 coordinate = geolocator.geocode(tweet[1]['user']['location'])
+                print(coordinate)
                 if(not coordinate):
                     continue
 
@@ -236,3 +239,88 @@ def cluster_map(df, nb_makers):
             continue
 
     return postions
+
+
+def topics_tweets_count_bar_chart_LDA():
+
+    od = collections.OrderedDict(sorted(tweetsIdsByTopic.items()))
+    x = od.keys()
+    y = [len(q) for q in od.values()]
+    topics = ["0.016*mask 0.012*please\n 0.010*help",  "0.020*trump 0.013*american 0.013*biden", "0.045*vaccine 0.019*pandemic 0.014*health",
+              "'0.020*people 0.020*vaccine 0.014*like", "0.049*case 0.033*death 0.014*test"]
+
+    animals = ["topic " + str(h[0]) + " : " + h[1]
+               for h in zip(list(x), topics)]
+
+    fig = go.Figure([go.Bar(x=animals, y=y)])
+    fig.update_layout(
+        xaxis=dict(
+            showline=True,
+            showgrid=False,
+            showticklabels=True,
+            linecolor='black',
+            linewidth=2,
+            ticks='outside',
+            tickfont=dict(
+                family='Arial',
+                size=12,
+                color='rgb(82, 82, 82)',
+            ),
+        ),
+        yaxis=dict(
+            showgrid=True,
+            linecolor='black',
+            zeroline=False,
+            showline=False,
+            gridcolor="rgb(82,82,82)",
+        ),
+        showlegend=False,
+        plot_bgcolor='#fafafa'
+    )
+    fig.layout.paper_bgcolor = '#fafafa'
+    fig.update_traces(marker_color='#456987')
+    fig.update_yaxes(title="number of tweets")
+    return fig
+
+
+def topics_tweets_count_bar_chart_NMF():
+
+    od = collections.OrderedDict(sorted(tweetsIdsByTopic.items()))
+    x = [0, 1, 2, 3, 4]
+    y = [27089, 64125, 25284, 214354, 17477]
+
+    topics = ["case*7.01 total*1.24 confirmed*0.97",  "coronavirus*6.04 news *1.25 pandemic*0.62", "vaccine*5.43 pfizer*0.50 dos*0.42",
+              "people*2.60 trump*1.80 mask*1.05", "death*5.21 toll*0.72 total*0.43"]
+
+    animals = ["topic " + str(h[0]) + " : " + h[1]
+               for h in zip(x, topics)]
+
+    fig = go.Figure([go.Bar(x=animals, y=y)])
+    fig.update_layout(
+        xaxis=dict(
+            showline=True,
+            showgrid=False,
+            showticklabels=True,
+            linecolor='black',
+            linewidth=2,
+            ticks='outside',
+            tickfont=dict(
+                family='Arial',
+                size=12,
+                color='rgb(82, 82, 82)',
+            ),
+        ),
+        yaxis=dict(
+            showgrid=True,
+            linecolor='black',
+            zeroline=False,
+            showline=False,
+            gridcolor="rgb(82,82,82)",
+        ),
+        showlegend=False,
+        plot_bgcolor='#fafafa'
+    )
+    fig.layout.paper_bgcolor = '#fafafa'
+    fig.update_traces(marker_color='#456987')
+    fig.update_yaxes(title="number of tweets")
+    return fig

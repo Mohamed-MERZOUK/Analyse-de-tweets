@@ -109,8 +109,9 @@ layout = dbc.Container(
         ),
         dbc.Row(
             [
-                dbc.Col(cardMultiProgress(title1="Hommes", title2="Femmes", value1=str(getGenderCounts(df_tweet)["male"]), value2=str(getGenderCounts(df_tweet)["female"]),
-                                          progress1=str(int(int(getGenderCounts(df_tweet)["male"])*100/300)), progress2=str(int(int(getGenderCounts(df_tweet)["male"]))*100/300))),
+                dbc.Col(cardMultiProgress(title1="Hommes", title2="Femmes", value1=str(15849), value2=str(19371),
+                                          # dbc.Col(cardMultiProgress(title1="Hommes", title2="Femmes", value1=str(getGenderCounts(df_tweet)["male"]), value2=str(getGenderCounts(df_tweet)["female"]),
+                                          progress1=str(int(15849*100/35220)), progress2=str(int(19371)*100/35220))),
             ]
         ),
         dbc.Row(
@@ -261,8 +262,8 @@ def update_graph_sent(dist_var):
 
     df = df_tweet.copy()
 
-    labels = ['Positive', 'Negative']
-    values = ['1000', '500']
+    labels = ['Negative', 'Positive']
+    values = ['29929', '5291']
     colors = ['#EF553B', 'rgb(102,194,165)']
 
     # Use `hole` to create a donut-like pie chart
@@ -287,10 +288,11 @@ def update_graph_sent(dist_var):
     return fig
 
 
-# @app.callback(Output("layer", "children"), [Input("map", "click_lat_lng")])
-# def map_click(click_lat_lng):
-#     pos = simple_map(df_tweet, nb_makers=100)
-#     return pos
+@app.callback(Output("layer", "children"), [Input("map", "click_lat_lng")])
+def map_click(click_lat_lng):
+    print("simple map")
+    pos = simple_map(df_tweet, nb_makers=20)
+    return pos
 
 
 @app.callback(Output("cluster-data", "data"), [Input("map-cluster", "click_lat_lng")])

@@ -35,13 +35,13 @@ sideBar = html.Nav(
                         ),
                         html.Li(
                             dbc.NavLink(
-                                'Analyse by keyword',
+                                'Analyse by keywords',
                                 href="/analysebykeyword",
                             )
                         ),
                         html.Li(
                             dbc.NavLink(
-                                'Analyse du Topic modeling',
+                                'Topic modeling Analysis',
                                 href="/analysetopicmodeling",
                             )
                         ),
